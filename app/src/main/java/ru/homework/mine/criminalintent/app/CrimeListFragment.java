@@ -1,11 +1,14 @@
 package ru.homework.mine.criminalintent.app;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
  */
 public class CrimeListFragment extends ListFragment {
     public ArrayList<Crime> mCrimes;
+    private boolean mSubtitleVisible;
     public static final String TAG = "CrimeListFragment";
 
     @Override
@@ -33,6 +37,8 @@ public class CrimeListFragment extends ListFragment {
 
         CrimeAdapter adapter = new CrimeAdapter(mCrimes);
         setListAdapter(adapter);
+        setRetainInstance(true);
+        mSubtitleVisible = false;
 
     }
 
@@ -85,6 +91,10 @@ public class CrimeListFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list, menu);
+        MenuItem showSubtitles = menu.findItem(R.id.menu_items_new_crime);
+        if (mSubtitleVisible && showSubtitles != null) {
+            showSubtitles.setTitle(R.string.hide_subtitle);
+        }
     }
 
     @Override
@@ -100,5 +110,17 @@ public class CrimeListFragment extends ListFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    @TargetApi(11)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (mSubtitleVisible) {
+                getActivity().getActionBar().setSubtitle(R.string.hide_subtitle);
+            }
+        }
+        return v;
     }
 }
