@@ -32,6 +32,11 @@ public class Crime {
         mDate = new Date(json.getLong(JSON_DATE));
     }
 
+    public Crime() {
+        mId = UUID.randomUUID();
+        mDate = new Date();
+    }
+
     public JSONObject toJSON() throws JSONException
     {
         JSONObject json = new JSONObject();
